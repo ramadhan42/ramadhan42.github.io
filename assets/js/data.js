@@ -2,6 +2,9 @@
    DATA PORTFOLIO — edit file ini untuk mengubah isi website.
    Teks dua bahasa ditulis sebagai { id: "...", en: "..." }.
    Kolom yang dikosongkan ("") otomatis disembunyikan dari halaman.
+
+   PERHATIAN: file ini ikut ter-publish dan bisa dibaca siapa pun, termasuk
+   komentarnya. Jangan menulis proyek atau data yang bersifat privat di sini.
    ========================================================================== */
 
 window.PORTFOLIO = {
@@ -13,12 +16,8 @@ window.PORTFOLIO = {
   company: "Dominatus", // tempat kerja saat ini — tampil sebagai "Saat ini bekerja di ..."
   available: false, // true = tampilkan "Terbuka untuk peluang kerja" (menggantikan label tempat kerja)
 
-  // --- Kontak & tautan (kosongkan jika tidak ingin ditampilkan) -------------
+  // --- GitHub (dipakai untuk bagian "Terbaru di GitHub") ------------------
   githubUsername: "ramadhan42",
-  email: "", // contoh: "nama@email.com" — akan tampil publik
-  linkedin: "", // contoh: "https://www.linkedin.com/in/username"
-  instagram: "", // contoh: "https://www.instagram.com/username"
-  cvUrl: "", // contoh: "assets/cv-m-nur-ramadhan.pdf"
 
   // --- Hero ----------------------------------------------------------------
   tagline: {
@@ -59,32 +58,35 @@ window.PORTFOLIO = {
   ],
 
   // --- Proyek pilihan --------------------------------------------------------
-  // Salin blok di bawah untuk menambah proyek. `demo` dan `repo` boleh kosong.
+  // Salin blok di bawah untuk menambah proyek. `demo` dan `repo` boleh kosong
+  // ("") — tautannya otomatis tidak ditampilkan.
   projects: [
     {
       title: "Portfolio Website",
       description: {
-        id: "Website portfolio pribadi dua bahasa dengan mode terang/gelap. Dibangun tanpa framework agar ringan, lalu di-deploy lewat GitHub Pages.",
-        en: "A bilingual personal portfolio with light/dark mode. Built without a framework to stay lightweight, then deployed on GitHub Pages.",
+        id: "Website portfolio pribadi ini: dua bahasa (ID/EN), mode terang/gelap, dan responsif. Dibangun dengan HTML, CSS, dan JavaScript tanpa framework, lalu di-deploy lewat GitHub Pages.",
+        en: "This personal portfolio: bilingual (ID/EN), light/dark mode, and responsive. Built with HTML, CSS, and JavaScript without a framework, then deployed on GitHub Pages.",
       },
       tags: ["HTML", "CSS", "JavaScript", "GitHub Pages"],
-      demo: "",
-      repo: "",
+      demo: "https://ramadhan42.github.io/",
+      repo: "https://github.com/ramadhan42/ramadhan42.github.io",
     },
-    /*
-    {
-      title: "Nama Proyek",
-      description: {
-        id: "Apa masalahnya, apa yang Anda bangun, dan apa hasilnya.",
-        en: "What the problem was, what you built, and what came out of it.",
-      },
-      tags: ["React", "Tailwind"],
-      demo: "https://contoh.com",
-      repo: "https://github.com/username/nama-repo",
-    },
-    */
   ],
 
-  // Tampilkan repo publik terbaru dari GitHub secara otomatis (true/false)
-  showGithubRepos: true,
+  // --- Bagian "Terbaru di GitHub" -------------------------------------------
+  showGithubRepos: false, // true = tampilkan bagian ini
+  // Hanya repo di daftar ini yang tampil, sesuai urutan. `name` harus sama
+  // dengan nama repo di GitHub; `label` (opsional) = nama yang ditampilkan.
+  // Jangan dikosongkan: daftar kosong ([]) menampilkan SEMUA repo publik terbaru.
+  githubRepos: [
+    {
+      name: "ramadhan42.github.io",
+      label: "portfolio",
+      language: "JavaScript",
+      description: {
+        id: "Website portfolio ini.",
+        en: "This portfolio website.",
+      },
+    },
+  ],
 };

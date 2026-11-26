@@ -14,7 +14,7 @@ assets/js/main.js     Logika (bahasa, tema, render, repo GitHub)
 
 ## Mengubah isi
 
-Semua isi ada di `assets/js/data.js`: nama, tagline, tentang, keahlian, proyek, dan kontak.
+Semua isi ada di `assets/js/data.js`: nama, tagline, tentang, keahlian, dan proyek.
 Kolom yang dikosongkan (`""`) otomatis tidak ditampilkan.
 
 Untuk melihat hasilnya, buka `index.html` langsung di browser.

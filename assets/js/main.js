@@ -11,11 +11,9 @@
       "nav.about": "Tentang",
       "nav.skills": "Keahlian",
       "nav.projects": "Proyek",
-      "nav.contact": "Kontak",
       "hero.hello": "Halo, saya",
       "hero.available": "Terbuka untuk peluang kerja",
       "hero.cta1": "Lihat proyek",
-      "hero.cta2": "Hubungi saya",
       "about.title": "Sedikit tentang saya",
       "about.location": "Lokasi",
       "about.role": "Peran",
@@ -29,14 +27,8 @@
       "projects.code": "Lihat kode",
       "repos.title": "Terbaru di GitHub",
       "repos.all": "Lihat semua di GitHub",
-      "contact.title": "Punya proyek atau peluang? Mari ngobrol.",
-      "contact.text": "Saya terbuka untuk kerja sama, proyek freelance, maupun posisi penuh waktu. Hubungi saya lewat salah satu kanal di bawah.",
       "hero.working": "Saat ini bekerja di {company}",
       "about.statusWorking": "Bekerja di {company}",
-      "contact.titleWork": "Ingin berdiskusi atau berkolaborasi? Mari ngobrol.",
-      "contact.textWork": "Saat ini saya bekerja di {company}. Saya tetap senang berkenalan, berdiskusi soal web, dan berkolaborasi. Hubungi saya lewat kanal di bawah.",
-      "contact.email": "Kirim email",
-      "contact.cv": "Unduh CV",
       "footer.built": "Dibuat dengan HTML, CSS & JavaScript · Di-host di GitHub Pages",
       "footer.top": "Kembali ke atas",
       "a11y.theme": "Ganti tema terang/gelap",
@@ -47,11 +39,9 @@
       "nav.about": "About",
       "nav.skills": "Skills",
       "nav.projects": "Projects",
-      "nav.contact": "Contact",
       "hero.hello": "Hi, I'm",
       "hero.available": "Open to opportunities",
       "hero.cta1": "View projects",
-      "hero.cta2": "Get in touch",
       "about.title": "A little about me",
       "about.location": "Location",
       "about.role": "Role",
@@ -65,14 +55,8 @@
       "projects.code": "View code",
       "repos.title": "Latest on GitHub",
       "repos.all": "See all on GitHub",
-      "contact.title": "Got a project or an opening? Let's talk.",
-      "contact.text": "I'm open to collaborations, freelance projects, and full-time roles. Reach me through any of the channels below.",
       "hero.working": "Currently working at {company}",
       "about.statusWorking": "Working at {company}",
-      "contact.titleWork": "Want to chat or collaborate? Let's talk.",
-      "contact.textWork": "I currently work at {company}. I'm still happy to connect, talk about the web, and collaborate. Reach me through the channels below.",
-      "contact.email": "Send an email",
-      "contact.cv": "Download CV",
       "footer.built": "Built with HTML, CSS & JavaScript · Hosted on GitHub Pages",
       "footer.top": "Back to top",
       "a11y.theme": "Toggle light/dark theme",
@@ -215,55 +199,73 @@
     );
   }
 
-  function renderContact() {
-    $("#contactTitle").textContent = ui(workMode === "work" ? "contact.titleWork" : "contact.title");
-    $("#contactText").textContent = ui(workMode === "work" ? "contact.textWork" : "contact.text");
+  /* ---------- Repo GitHub (dimuat otomatis) ---------- */
+  let apiRepos = []; // hasil dari GitHub API (kosong jika belum/gagal dimuat)
 
-    const items = [
-      data.email && { href: `mailto:${data.email}`, label: ui("contact.email"), external: false },
-      githubUrl && { href: githubUrl, label: "GitHub" },
-      data.linkedin && { href: data.linkedin, label: "LinkedIn" },
-      data.instagram && { href: data.instagram, label: "Instagram" },
-      data.cvUrl && { href: data.cvUrl, label: ui("contact.cv") },
-    ].filter(Boolean);
+  function renderRepos() {
+    const section = $("#repos");
+    if (!data.showGithubRepos || !githubUrl) return void (section.hidden = true);
 
-    $("#contactLinks").replaceChildren(
-      ...items.map((item, i) =>
-        el("a", {
-          class: `btn ${i === 0 ? "btn--primary" : "btn--ghost"}`,
-          ...(item.external === false ? { href: item.href } : external(item.href)),
-          text: item.external === false ? item.label : `${item.label} ↗`,
-        })
+    // Jika `githubRepos` diisi, hanya repo itu yang tampil (urutannya mengikuti daftar).
+    const picks = (data.githubRepos || [])
+      .map((entry) => (typeof entry === "string" ? { name: entry } : entry))
+      .filter((entry) => entry && entry.name);
+
+    // Hanya repo yang benar-benar publik di GitHub yang tampil, supaya tidak ada tautan mati.
+    const cards = picks.length
+      ? picks
+          .map((pick) => {
+            const api = apiRepos.find((repo) => repo.name.toLowerCase() === pick.name.toLowerCase());
+            return (
+              api && {
+                name: pick.label || pick.name,
+                url: api.html_url,
+                description: tr(pick.description) || api.description || "",
+                language: pick.language || api.language,
+                stars: api.stargazers_count,
+              }
+            );
+          })
+          .filter(Boolean)
+      : apiRepos
+          .filter((repo) => !repo.fork && !repo.archived)
+          .slice(0, 6)
+          .map((repo) => ({
+            name: repo.name,
+            url: repo.html_url,
+            description: repo.description || "",
+            language: repo.language,
+            stars: repo.stargazers_count,
+          }));
+
+    section.hidden = !cards.length;
+    if (!cards.length) return;
+
+    $("#reposGrid").replaceChildren(
+      ...cards.map((card) =>
+        el("a", { class: "repo", ...external(card.url) }, [
+          el("span", { class: "repo__name", text: card.name }),
+          el("span", { class: "repo__desc", text: card.description }),
+          el("span", { class: "repo__meta" }, [
+            card.language && el("span", { class: "repo__lang", text: card.language }),
+            card.stars > 0 && el("span", { text: `★ ${card.stars}` }),
+          ].filter(Boolean)),
+        ])
       )
     );
+    $("#reposAll").href = `${githubUrl}?tab=repositories`;
   }
 
-  /* ---------- Repo GitHub (dimuat otomatis) ---------- */
   async function loadRepos() {
     if (!data.showGithubRepos || !data.githubUsername) return;
     try {
       const res = await fetch(
-        `https://api.github.com/users/${encodeURIComponent(data.githubUsername)}/repos?sort=updated&per_page=30`,
+        `https://api.github.com/users/${encodeURIComponent(data.githubUsername)}/repos?sort=updated&per_page=100`,
         { headers: { Accept: "application/vnd.github+json" } }
       );
       if (!res.ok) return;
-      const repos = (await res.json()).filter((repo) => !repo.fork && !repo.archived).slice(0, 6);
-      if (!repos.length) return;
-
-      $("#reposGrid").replaceChildren(
-        ...repos.map((repo) =>
-          el("a", { class: "repo", ...external(repo.html_url) }, [
-            el("span", { class: "repo__name", text: repo.name }),
-            el("span", { class: "repo__desc", text: repo.description || "" }),
-            el("span", { class: "repo__meta" }, [
-              repo.language && el("span", { class: "repo__lang", text: repo.language }),
-              repo.stargazers_count > 0 && el("span", { text: `★ ${repo.stargazers_count}` }),
-            ].filter(Boolean)),
-          ])
-        )
-      );
-      $("#reposAll").href = `${githubUrl}?tab=repositories`;
-      $("#repos").hidden = false;
+      apiRepos = await res.json();
+      renderRepos();
     } catch {
       /* offline atau kena rate limit — bagian ini tetap tersembunyi */
     }
@@ -284,7 +286,7 @@
     renderAbout();
     renderSkills();
     renderProjects();
-    renderContact();
+    renderRepos();
   }
 
   $$("[data-lang]").forEach((btn) =>

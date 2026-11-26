@@ -596,7 +596,7 @@ button {
 /* ---------- Projects ---------- */
 .projects {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
   gap: 1.25rem;
 }
 
@@ -682,7 +682,7 @@ button {
 
 .repos__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
   gap: 1rem;
 }
 
@@ -734,39 +734,10 @@ button {
   background: var(--accent);
 }
 
-/* ---------- Contact ---------- */
-.contact__inner {
-  text-align: center;
-}
-
-.contact__title {
-  max-width: 18ch;
-  margin: 0.9rem auto 0;
-  font-family: var(--font-display);
-  font-size: clamp(2.2rem, 6vw, 4.25rem);
-  font-weight: 500;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-}
-
-.contact__text {
-  max-width: 34rem;
-  margin: 1.4rem auto 0;
-  color: var(--muted);
-  font-size: 1.05rem;
-}
-
-.contact__links {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.85rem;
-  margin-top: 2.25rem;
-}
-
 /* ---------- Footer ---------- */
 .footer {
   padding: 1.75rem 0;
+  border-top: 1px solid var(--line);
   font-size: 0.85rem;
   color: var(--muted);
 }
