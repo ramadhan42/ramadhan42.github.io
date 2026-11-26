@@ -48,6 +48,10 @@ window.PORTFOLIO = {
       items: ["HTML5", "CSS3", "JavaScript (ES6+)", "Responsive Design"],
     },
     {
+      title: { id: "Backend", en: "Backend" },
+      items: ["PHP", "Laravel"],
+    },
+    {
       title: { id: "Tools", en: "Tools" },
       items: ["Git", "GitHub", "VS Code", "GitHub Pages"],
     },
